@@ -21,6 +21,8 @@ class Index extends CI_Controller
 
         $this->load->helper('url');
         $this->load->helper('date');
+
+        $this->load->model('Mtest');
     }
     
     /**
@@ -33,6 +35,12 @@ class Index extends CI_Controller
         $this->load->view('test');
     }
 
+    public function test()
+    {
+        $query = $this->Mtest->getInfo();
+        var_dump($query->result_array());
+    }
+
     /**
      * 加载数据
      * 
@@ -40,9 +48,16 @@ class Index extends CI_Controller
      */
     public function load_data()
     {
-        $name = ['肥仔', 'Oranges', 'Pears', 'Grapes', 'Bananas'];
-        $empty = [5, 3, 4, 7, 2];
-        $contain = [2, 2, 3, 2, 1];
+        $name = [];
+        $empty = [];
+        $contain = [];
+        $query = $this->Mtest->getInfo();
+        foreach($query->result_array() as $row) {
+            #var_dump($row);
+            array_push($name, $row['name']);
+            array_push($empty, (int)$row['empty']);
+            array_push($contain, (int)$row['contain']);
+        }
         echo json_encode(array('name'=>$name, 'empty'=>$empty, 'contain'=>$contain));
     }
 
